@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Noticias</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="//netdna.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" rel="stylesheet" media="screen">
+    <link href="https://unpkg.com/bootstrap-table@1.18.2/dist/bootstrap-table.min.css" rel="stylesheet">
+    <style>
+      .container {
+        max-width: 1000px;
+      }
+    </style>
+  </head>
+  <body>
+    <ul class="nav nav-tabs">
+        <li role="presentation" class="active"><a href="#">Home</a></li>
+        <li role="presentation"><a href="/about">Acerca de</a></li>
+    </ul>
+    <div class="container">
+      <h1>Noticias tecnología</h1>
+      <div>
+        <div id="category-group" style="display: none;">
+            <button type="button" onclick="volver()" class="btn btn-default btn-sm">
+                Volver
+            </button>
+        </div>
+        <table
+            id="table"
+            data-search="true"
+            data-show-toggle="true"
+            data-show-fullscreen="true"
+            data-show-columns="true"
+            data-show-refresh="true"
+            data-show-columns-toggle-all="true"
+            data-detail-view="true"
+            data-minimum-count-columns="2"
+            data-pagination="true"
+            data-detail-formatter="detailFormatter"
+            data-id-field="id"
+            data-page-list="[10, 25, 50, 100, all]"
+            data-url = "/consultaNoticias"
+            >
+        </table>
+      </div>
+    </div>
+    <script src="//code.jquery.com/jquery-2.2.1.min.js"></script>
+    <script src="//netdna.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+    <script src="https://unpkg.com/bootstrap-table@1.18.2/dist/bootstrap-table.min.js"></script>
+    <script src="https://unpkg.com/bootstrap-table@1.18.2/dist/bootstrap-table-locale-all.min.js"></script>
+    <script>
+        var $table = $('#table')
+        
+        function detailFormatter(index, row) {
+            var html = []
+            html.push('<p><b>Resumen:</b> ' + row["resume"] + '</p>')
+            return html.join('')
+        }
+        
+        function tagFormatter(value) {
+            var html = []
+            value.split(',').forEach(function(tag, index) {
+                html.push('<button class="label label-primary" onclick="groupTag(this)">' + tag + '</button>')
+            });
+            return html.join('')
+        }
+
+        function groupTag(e){
+            $('#table').bootstrapTable('filterBy', {
+                tags: e.innerText
+            });
+            $('#category-group').show();
+        }
+
+        function volver(){
+            $('#table').bootstrapTable('filterBy', {});
+            $('#category-group').hide();
+        }
+
+        function initTable() {
+          
+          $table.bootstrapTable('destroy').bootstrapTable({
+            height: 550,
+            locale:'es-MX',
+            columns: [
+              [{
+                title: 'Item',
+                field: 'id',
+                rowspan: 2,
+                align: 'center',
+                valign: 'middle',
+                sortable: true,
+              }, {
+                title: 'Item Detalle',
+                colspan: 4,
+                align: 'center'
+              }],
+              [{
+                field: 'title',
+                title: 'Titulo',
+                sortable: true,
+                align: 'left'
+              }, {
+                field: 'description',
+                title: 'Descripción',
+                sortable: true,
+                align: 'left',
+              }, {
+                field: 'datePublished',
+                title: 'Fecha Publicación',
+                sortable: true,
+                align: 'center',
+              }, {
+                field: 'tags',
+                title: 'Etiqueta',
+                sortable: false,
+                align: 'center',
+                sortable: true,
+                formatter:'tagFormatter'
+              }]
+            ]
+          })
+        }
+      
+        $(function() {
+          initTable()
+        })
+      </script>
+</body>
+</html>
